@@ -1,8 +1,11 @@
 package fragment
 
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import kotlinx.android.synthetic.main.fragment_.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import ndk.pax.com.paxtakeout.R
+import ndk.pax.com.paxtakeout.adapter.HomeListAdapter
 
 /**
  * User：Rowen
@@ -18,6 +21,16 @@ class HomeFragment:BaseFragment(){
     }
 
     override fun init() {
+        initRecyleView()
+
+    }
+
+    private fun initRecyleView() {
+        val mdats= arrayListOf<String>("xx","xxx","qqqqq","xx","xxx","qqqqq","xx","xxx","qqqqq")
+        rv_home.apply {
+            layoutManager=LinearLayoutManager(context)//默认从上到下
+            adapter=HomeListAdapter(context, mdats as ArrayList<String>)
+        }
 
     }
 
