@@ -9,9 +9,13 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.adapter.HomeListAdapter
 import ndk.pax.com.paxtakeout.contract.HomeFragmentContract
+import ndk.pax.com.paxtakeout.dagger2.component.DaggerHomeFragmentComponent
+import ndk.pax.com.paxtakeout.dagger2.module.HomeFragmentModule
 import ndk.pax.com.paxtakeout.extentions.dip2px
 import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.presenter.HomeFragmentPresenter
+import org.jetbrains.anko.toast
+import javax.inject.Inject
 
 /**
  * User：Rowen
@@ -20,22 +24,24 @@ import ndk.pax.com.paxtakeout.presenter.HomeFragmentPresenter
  *
  */
 
-class HomeFragment : BaseFragment(),HomeFragmentContract.View {
+class HomeFragment : BaseFragment(), HomeFragmentContract.View {
 
+    @Inject
+    lateinit var homeFragmentPresenter: HomeFragmentPresenter
+    //解耦P层和View层 通过dragger2(基于注解的依赖注入，生成HomeFragmentPresenter)
+//    val homeFragmentPresenter by lazy {
+//        HomeFragmentPresenter(this)
+//    }
 
-    val homeFragmentPresenter by lazy {
-        HomeFragmentPresenter(this)
-    }
-
-    override fun onHomeSuccess(nearSellerList: List<SellerListItem>,otherSellerList: List<SellerListItem>) {
+    override fun onHomeSuccess(nearSellerList: List<SellerListItem>, otherSellerList: List<SellerListItem>) {
         //数据接收成功回调
-//        context?.toast("接收数据成功")
-        Log.e("succes","接收数据成功")
+        context?.toast("接收数据成功")
+        Log.e("succes", "接收数据成功")
         rv_home.adapter?.notifyDataSetChanged()
     }
 
     override fun onHomeFail() {
-       Log.e("fail","接收数据失败")
+        Log.e("fail", "接收数据失败")
     }
 
     var sum: Int = 0
@@ -47,6 +53,12 @@ class HomeFragment : BaseFragment(),HomeFragmentContract.View {
     }
 
     override fun init() {
+        //初始化P层
+        DaggerHomeFragmentComponent.builder()
+                .homeFragmentModule(HomeFragmentModule(this))
+                .build()
+                .inject(this)
+
         //初始化recycleview
         distance = context?.let { 120.dip2px(it) }!!//120dp-----转换为像素
         initRecyleView()
@@ -63,12 +75,12 @@ class HomeFragment : BaseFragment(),HomeFragmentContract.View {
 
         rv_home.apply {
             layoutManager = LinearLayoutManager(context)//默认从上到下
-            adapter = HomeListAdapter(context,homeFragmentPresenter.allList)
-
-            addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            adapter = HomeListAdapter(context, homeFragmentPresenter.allList)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                 }
+
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     sum = sum?.plus(dy)

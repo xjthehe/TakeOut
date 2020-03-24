@@ -47,10 +47,14 @@ class HomeFragmentPresenter(val view:HomeFragmentContract.View):HomeFragmentCont
                     if(response!=null){
                         if(response.isSuccessful){
                             val responseInfo = response.body()
-                            val code = responseInfo?.code
-                            Log.e("onResponse","连上服务器"+code)
-                            val json = responseInfo?.data
-                            parseJson(json)
+                            val code = responseInfo?.code?.toInt()
+                            if(code==0){
+                                Log.e("onResponse","连上服务器"+code)
+                                val json = responseInfo?.data
+                                parseJson(json)
+                            }else{
+
+                            }
                         }else{
                             Log.e("onResponse","服务器返回错误")
                         }
