@@ -8,7 +8,9 @@ import android.view.View
 import kotlinx.android.synthetic.main.fragment_home.*
 import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.adapter.HomeListAdapter
+import ndk.pax.com.paxtakeout.contract.HomeFragmentContract
 import ndk.pax.com.paxtakeout.extentions.dip2px
+import ndk.pax.com.paxtakeout.presenter.HomeFragmentPresenter
 
 /**
  * User：Rowen
@@ -17,7 +19,20 @@ import ndk.pax.com.paxtakeout.extentions.dip2px
  *
  */
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(),HomeFragmentContract.View {
+
+    val homeFragmentPresenter by lazy {
+        HomeFragmentPresenter(this)
+    }
+
+    override fun onHomeSuccess() {
+
+    }
+
+    override fun onHomeFail() {
+
+    }
+
     var sum: Int = 0
     var distance: Int = 0
     var alph = 55
@@ -31,6 +46,8 @@ class HomeFragment : BaseFragment() {
         distance = context?.let { 120.dip2px(it) }!!//120dp-----转换为像素
         initRecyleView()
 
+        //执行home首页p层逻辑请求
+        homeFragmentPresenter.getHomeInfo()
     }
 
     private fun initRecyleView() {
