@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import ndk.pax.com.paxtakeout.widget.HomeHeadView
 import ndk.pax.com.paxtakeout.widget.HomeListItemView
 
 /**
@@ -14,18 +15,53 @@ import ndk.pax.com.paxtakeout.widget.HomeListItemView
  */
 
 class HomeListAdapter(val context:Context,val mdatas:ArrayList<String>):RecyclerView.Adapter<RecyclerView.ViewHolder>(){
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
-        return HomeItemViewHolder(HomeListItemView(context))
+
+    companion object {
+        val ITEM_TYPE_HEAD_VIEW=0
+        val ITEM_TYPE_ITEM_VIEW=1
     }
 
-    override fun getItemCount(): Int =mdatas.size
+    override fun getItemViewType(position: Int): Int {
+        if(position==0){
+            return ITEM_TYPE_HEAD_VIEW
+        }else{
+            return ITEM_TYPE_ITEM_VIEW
+        }
+    }
+
+    override fun onCreateViewHolder(p0: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if(viewType==ITEM_TYPE_HEAD_VIEW){
+            return HomeHeadViewHolder(HomeHeadView(context))
+        }else {
+            return HomeItemViewHolder(HomeListItemView(context))
+        }
+    }
+
+
+
+   override fun getItemCount(): Int {
+       if(mdatas.size>0){
+          return mdatas.size+1
+       }else{
+           return 0
+       }
+   }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-       val homeListItemView= holder.itemView as HomeListItemView
-        homeListItemView.bindView(mdatas[position])
+        if(getItemViewType(position)== ITEM_TYPE_HEAD_VIEW){
+            val homeHeadView= holder.itemView as HomeHeadView
+            homeHeadView.bindView("我是大哥。。。。。。。。。。。。。。")
+        }else{
+            val homeListItemView= holder.itemView as HomeListItemView
+            homeListItemView.bindView(mdatas[position-1])
+        }
+
     }
 
     class HomeItemViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
+
+    }
+    class HomeHeadViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
 
     }
 }

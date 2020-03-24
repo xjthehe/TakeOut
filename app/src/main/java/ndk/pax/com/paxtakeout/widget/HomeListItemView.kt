@@ -15,14 +15,12 @@ import ndk.pax.com.paxtakeout.R
  */
 
 class HomeListItemView(context: Context?, attrs: AttributeSet?=null) : RelativeLayout(context, attrs) {
-    fun bindView(s: String) {
-        tv.text=s
-    }
-
 
     init {
-        View.inflate(context, R.layout.item_home_common,this)
+        View.inflate(context, R.layout.item_seller,this)
     }
 
-
+    fun bindView(s: String){
+//        tv.text=s
+    }
 }
