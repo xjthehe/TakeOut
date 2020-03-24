@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
           ll_main_activity.setPadding(0,0,0, 50.dip2px(this))
         }
         initBottomBar()
+
         changeIndex(0)
     }
 

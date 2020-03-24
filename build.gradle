@@ -7,7 +7,7 @@ buildscript {
     ext.target_sdk_version=28
     ext.support_version="27.0.1"
     ext.kotlin_version = '1.2.30'
-    ext.anko_version = '0.10.0'
+    ext.anko_version = '0.10.8'
     repositories {
         google()
         jcenter()

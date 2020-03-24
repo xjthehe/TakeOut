@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.widget.HomeHeadView
 import ndk.pax.com.paxtakeout.widget.HomeListItemView
 
@@ -14,7 +15,7 @@ import ndk.pax.com.paxtakeout.widget.HomeListItemView
  *
  */
 
-class HomeListAdapter(val context:Context,val mdatas:ArrayList<String>):RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class HomeListAdapter(val context:Context,val mdatas:ArrayList<SellerListItem>):RecyclerView.Adapter<RecyclerView.ViewHolder>(){
 
     companion object {
         val ITEM_TYPE_HEAD_VIEW=0

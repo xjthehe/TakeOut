@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
-import kotlinx.android.synthetic.main.item_home_common.view.*
 import ndk.pax.com.paxtakeout.R
+import ndk.pax.com.paxtakeout.model.SellerListItem
 
 /**
  * User：Rowen
@@ -20,7 +20,7 @@ class HomeListItemView(context: Context?, attrs: AttributeSet?=null) : RelativeL
         View.inflate(context, R.layout.item_seller,this)
     }
 
-    fun bindView(s: String){
+    fun bindView(s: SellerListItem){
 //        tv.text=s
     }
 }

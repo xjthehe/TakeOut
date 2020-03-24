@@ -10,6 +10,7 @@ import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.adapter.HomeListAdapter
 import ndk.pax.com.paxtakeout.contract.HomeFragmentContract
 import ndk.pax.com.paxtakeout.extentions.dip2px
+import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.presenter.HomeFragmentPresenter
 
 /**
@@ -21,16 +22,20 @@ import ndk.pax.com.paxtakeout.presenter.HomeFragmentPresenter
 
 class HomeFragment : BaseFragment(),HomeFragmentContract.View {
 
+
     val homeFragmentPresenter by lazy {
         HomeFragmentPresenter(this)
     }
 
-    override fun onHomeSuccess() {
-
+    override fun onHomeSuccess(nearSellerList: List<SellerListItem>,otherSellerList: List<SellerListItem>) {
+        //数据接收成功回调
+//        context?.toast("接收数据成功")
+        Log.e("succes","接收数据成功")
+        rv_home.adapter?.notifyDataSetChanged()
     }
 
     override fun onHomeFail() {
-
+       Log.e("fail","接收数据失败")
     }
 
     var sum: Int = 0
@@ -51,14 +56,14 @@ class HomeFragment : BaseFragment(),HomeFragmentContract.View {
     }
 
     private fun initRecyleView() {
-        val mdats = arrayListOf<String>("xx", "xxx", "qqqqq", "xx", "xxx", "qqqqq", "xx", "xxx", "qqqqq")
-        for (i in 0 until 100) {
-            mdats.add("商家" + i)
-        }
+//        val mdats = arrayListOf<String>("xx", "xxx", "qqqqq", "xx", "xxx", "qqqqq", "xx", "xxx", "qqqqq")
+//        for (i in 0 until 100) {
+//            mdats.add("商家" + i)
+//        }
 
         rv_home.apply {
             layoutManager = LinearLayoutManager(context)//默认从上到下
-            adapter = HomeListAdapter(context, mdats as ArrayList<String>)
+            adapter = HomeListAdapter(context,homeFragmentPresenter.allList)
 
             addOnScrollListener(object : RecyclerView.OnScrollListener(){
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

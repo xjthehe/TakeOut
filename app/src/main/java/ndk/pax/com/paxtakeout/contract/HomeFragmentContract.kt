@@ -1,5 +1,7 @@
 package ndk.pax.com.paxtakeout.contract
 
+import ndk.pax.com.paxtakeout.model.SellerListItem
+
 /**
  * User：Rowen
  * Description:
@@ -14,7 +16,7 @@ interface HomeFragmentContract{
     }
 
     interface View{
-        fun onHomeSuccess()
+        fun onHomeSuccess(nearSellerList: List<SellerListItem>, otherSellerList: List<SellerListItem>)
         fun onHomeFail()
     }
 }

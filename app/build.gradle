@@ -32,13 +32,14 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     //Anko通用库
-    implementation "org.jetbrains.anko:anko-sqlite:$anko_version"
+//    implementation "org.jetbrains.anko:anko-commons:$anko_version"
+
     implementation "com.android.support:recyclerview-v7:$support_version"
     implementation 'com.android.support:design:28.0.0'
-
-
     implementation 'com.squareup.picasso:picasso:2.3.2'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.daimajia.slider:library:1.1.5@aar'
-
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
 }
