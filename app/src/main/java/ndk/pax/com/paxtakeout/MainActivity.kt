@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import factory.FragmentFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import ndk.pax.com.paxtakeout.extentions.dip2px
-import ndk.pax.com.paxtakeout.utils.ScaleUtils
 
 class MainActivity : AppCompatActivity() {
 

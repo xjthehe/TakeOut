@@ -1,7 +1,6 @@
 package ndk.pax.com.paxtakeout.extentions
 
 import android.content.Context
-import org.jetbrains.anko.db.REAL
 
 
 /**
@@ -22,9 +21,9 @@ fun<K,V> MutableMap<K,V>.toVarargArray():Array<Pair<K,V>>{
 }
 
 
-fun Int.dip2px(context:Context):Int{
+fun Int.dip2px(context: Context):Int{
     val scale = context.getResources().getDisplayMetrics().density;
-    return(toFloat() * scale + 0.5f)as Int;
+    return(toFloat() * scale + 0.5f).toInt();
 }
 
 
