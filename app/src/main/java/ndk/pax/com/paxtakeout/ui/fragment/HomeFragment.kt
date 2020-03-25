@@ -14,7 +14,7 @@ import ndk.pax.com.paxtakeout.dagger2.module.HomeFragmentModule
 import ndk.pax.com.paxtakeout.extentions.dip2px
 import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.presenter.HomeFragmentPresenter
-import org.jetbrains.anko.toast
+//import org.jetbrains.anko.toast
 import javax.inject.Inject
 
 /**
@@ -25,6 +25,9 @@ import javax.inject.Inject
  */
 
 class HomeFragment : BaseFragment(), HomeFragmentContract.View {
+    var sum: Int = 0
+    var distance: Int = 0
+    var alph = 55
 
     @Inject
     lateinit var homeFragmentPresenter: HomeFragmentPresenter
@@ -35,7 +38,7 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
 
     override fun onHomeSuccess(nearSellerList: List<SellerListItem>, otherSellerList: List<SellerListItem>) {
         //数据接收成功回调
-        context?.toast("接收数据成功")
+//        context?.toast("接收数据成功")
         Log.e("succes", "接收数据成功")
         rv_home.adapter?.notifyDataSetChanged()
     }
@@ -44,9 +47,7 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
         Log.e("fail", "接收数据失败")
     }
 
-    var sum: Int = 0
-    var distance: Int = 0
-    var alph = 55
+
     override fun getLayoutId(): View? {
         val view = View.inflate(activity, R.layout.fragment_home, null)
         return view
@@ -54,17 +55,20 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
 
     override fun init() {
         //初始化P层
+        initDarrager()
+        //初始化recycleview
+        initRecyleView()
+        //初始化头部最大距离(通过透明度来控制）
+        distance = context?.let { 120.dip2px(it) }!!//120dp-----转换为像素
+        //执行home首页p层逻辑请求
+        homeFragmentPresenter.getHomeInfo()
+    }
+
+    private fun initDarrager() {
         DaggerHomeFragmentComponent.builder()
                 .homeFragmentModule(HomeFragmentModule(this))
                 .build()
                 .inject(this)
-
-        //初始化recycleview
-        distance = context?.let { 120.dip2px(it) }!!//120dp-----转换为像素
-        initRecyleView()
-
-        //执行home首页p层逻辑请求
-        homeFragmentPresenter.getHomeInfo()
     }
 
     private fun initRecyleView() {
@@ -72,7 +76,6 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
 //        for (i in 0 until 100) {
 //            mdats.add("商家" + i)
 //        }
-
         rv_home.apply {
             layoutManager = LinearLayoutManager(context)//默认从上到下
             adapter = HomeListAdapter(context, homeFragmentPresenter.allList)
@@ -94,7 +97,9 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
                 }
             })
         }
-
-
     }
+
+
+
+
 }
