@@ -3,6 +3,7 @@ package ndk.pax.com.paxtakeout.model.net
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * User：Rowen
@@ -17,5 +18,9 @@ interface TakeOutService {
 
     @GET("home")
     fun  getHomeInfo(): Call<ResponseInfo>
+
+    @GET("login")
+    fun  getLoginInfo(@Query("phone") phone:String): Call<ResponseInfo>
+
 
 }

@@ -1,6 +1,7 @@
 package ndk.pax.com.paxtakeout.utils
 
 import com.mob.MobApplication
+import ndk.pax.com.paxtakeout.model.bean.User
 
 /**
  * User：Rowen
@@ -10,9 +11,12 @@ import com.mob.MobApplication
  */
 
 class TakeoutApp:MobApplication(){
-
+    companion object {
+        var user:User= User()
+    }
 
     override fun onCreate() {
         super.onCreate()
+        user.id=-1//未登录用户
     }
 }
