@@ -13,18 +13,14 @@ import retrofit2.converter.gson.GsonConverterFactory
  * User：Rowen
  * Description:
  * 时间: 2020/3/27:13:57
- *
  */
-
 open abstract class NetPresenter : BasePresenter {
     val service: TakeOutService
-
     init {
         val retrofit = Retrofit.Builder()
                 .baseUrl("http://203.195.245.169:8080/TakeOutService/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-
         service = retrofit.create(TakeOutService::class.java)
     }
 

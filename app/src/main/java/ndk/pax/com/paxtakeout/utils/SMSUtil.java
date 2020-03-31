@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class SMSUtil {
     /**
      * 判断手机号码是否合理
-     *y
      */
     public static boolean judgePhoneNums(Activity activity,String phoneNums) {
         if (isMatchLength(phoneNums, 11)

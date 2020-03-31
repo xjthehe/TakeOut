@@ -35,7 +35,7 @@ class LogingActivity:BaseActivity(),LogingActivityContract.View{
     override fun getLayoutResId(): Int= R.layout.activity_login
 
     val logingActivityPresenter:LogingActivityPresenter by lazy {
-        LogingActivityPresenter(this)
+        LogingActivityPresenter(this,this)
     }
 
     override fun onLoginByPhoneSuccess() {

@@ -21,13 +21,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--SSMSDK-->
+        <!--SSMSDK Appkey和Secret-->
         <meta-data
             android:name="Mob-AppKey"
             android:value="2e8720d357994" />
         <meta-data
             android:name="Mob-AppSecret"
-            android:value="" />
+            android:value="20104f7411ad27c79be8f1d8943e2d34" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

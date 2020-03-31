@@ -14,10 +14,10 @@ import ndk.pax.com.paxtakeout.R
 
 class OrderFragment:BaseFragment(){
     override fun getLayoutId(): View? {
-        val view= View.inflate(activity,R.layout.fragment_,null)
+        val view= View.inflate(activity,R.layout.fragment_order,null)
         return  view
     }
     override fun init() {
-        tv.text="订单"
+//        tv.text="订单"
     }
 }
