@@ -24,7 +24,7 @@
         <!--SSMSDK Appkey和Secret-->
         <meta-data
             android:name="Mob-AppKey"
-            android:value="2e8720d357994" />
+            android:value="" />
         <meta-data
             android:name="Mob-AppSecret"
             android:value="20104f7411ad27c79be8f1d8943e2d34" />
