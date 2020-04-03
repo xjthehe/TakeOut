@@ -6,6 +6,7 @@ import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper
 import com.j256.ormlite.support.ConnectionSource
 import com.j256.ormlite.table.TableUtils
 import ndk.pax.com.paxtakeout.model.bean.User
+import java.sql.SQLException
 
 /**
  * User：Rowen
@@ -17,10 +18,16 @@ import ndk.pax.com.paxtakeout.model.bean.User
 class TakeOutOpenHelper(val context: Context) :OrmLiteSqliteOpenHelper(context,"takeout_ktlin.db",null,1){
     override fun onCreate(database: SQLiteDatabase?, connectionSource: ConnectionSource?) {
        //创建User表
-        TableUtils.clearTable(connectionSource,User::class.java)
+        TableUtils.createTable(connectionSource,User::class.java)
     }
 
     override fun onUpgrade(database: SQLiteDatabase?, connectionSource: ConnectionSource?, oldVersion: Int, newVersion: Int) {
+        try {
+            TableUtils.dropTable<User, Any>(connectionSource, User::class.java, false)
+            onCreate(database, connectionSource)
+        } catch (e: SQLException) {
+            e.printStackTrace()
+        }
 
     }
 

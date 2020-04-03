@@ -28,6 +28,11 @@ android {
             dirs 'libs'
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {
@@ -55,4 +60,7 @@ dependencies {
     //手动配置
     implementation name: 'SMSSDK-3.0.0', ext: 'aar'
     implementation 'com.j256.ormlite:ormlite-android:5.1'
+//    implementation files('libs/jpush-android_v3.0.6.jar')
+    implementation files('libs/jcore-android-2.1.6.jar')
+    implementation files('libs/jpush-android-3.3.8.jar')
 }

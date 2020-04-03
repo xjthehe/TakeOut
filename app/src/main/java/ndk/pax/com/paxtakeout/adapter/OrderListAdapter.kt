@@ -2,10 +2,13 @@ package ndk.pax.com.paxtakeout.adapter
 
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import com.heima.takeout.utils.OrderObservable
 import ndk.pax.com.paxtakeout.model.bean.Order
 import ndk.pax.com.paxtakeout.widget.OrderListItemView
+import java.util.*
 
 /**
  * User：Rowen
@@ -14,7 +17,20 @@ import ndk.pax.com.paxtakeout.widget.OrderListItemView
  *
  */
 
-class OrderListAdapter(val context :Context,val mDatas:List<Order>):RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+class OrderListAdapter(val context :Context,val mDatas:List<Order>):RecyclerView.Adapter<RecyclerView.ViewHolder>(),Observer{
+
+    init {
+        //让观察者与被观察者建立关系
+        OrderObservable.instance.addObserver(this)
+    }
+
+
+    //观察者响应
+    override fun update(observer: Observable?, arg: Any?) {
+        //receive notifyodserverble回调
+        Log.e("update","观察者收到了消息，消息内容："+arg)
+    }
+
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         return OrderViewHolder(OrderListItemView(context))
     }
