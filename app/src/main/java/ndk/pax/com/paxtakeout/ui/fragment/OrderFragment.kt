@@ -55,7 +55,6 @@ class OrderFragment:BaseFragment(),OrderFragmentContract.View{
         rv_order_list.apply {
             layoutManager = LinearLayoutManager(context)//默认从上到下
             adapter=OrderListAdapter(context,orderFragmentPresenter.allOrderList)
-
         }
         //swiplayout
         srl_order.setOnRefreshListener(object :SwipeRefreshLayout.OnRefreshListener{

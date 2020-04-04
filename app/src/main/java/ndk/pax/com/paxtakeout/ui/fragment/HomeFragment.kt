@@ -47,7 +47,6 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
         Log.e("fail", "接收数据失败")
     }
 
-
     override fun getLayoutId(): View? {
         val view = View.inflate(activity, R.layout.fragment_home, null)
         return view
@@ -60,10 +59,13 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
         initRecyleView()
         //初始化头部最大距离(通过透明度来控制）
         distance = context?.let { 120.dip2px(it) }!!//120dp-----转换为像素
+
+    }
+
+    override fun initActivityCreated() {
         //执行home首页p层逻辑请求
         homeFragmentPresenter.getHomeInfo()
     }
-
     private fun initDarrager() {
         DaggerHomeFragmentComponent.builder()
                 .homeFragmentModule(HomeFragmentModule(this))
@@ -100,6 +102,8 @@ class HomeFragment : BaseFragment(), HomeFragmentContract.View {
     }
 
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 
 }

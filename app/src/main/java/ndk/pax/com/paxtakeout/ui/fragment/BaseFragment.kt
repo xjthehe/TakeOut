@@ -1,5 +1,6 @@
 package fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -24,6 +25,16 @@ abstract class BaseFragment :Fragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         init()
+    }
+
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        initActivityCreated()
+    }
+
+    open fun initActivityCreated(){
+
     }
 
     open fun init() {
