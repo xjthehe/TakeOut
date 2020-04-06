@@ -1,9 +1,11 @@
 package ndk.pax.com.paxtakeout.model.net
 
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+//import rx.Observable
 
 /**
  * User：Rowen
@@ -26,6 +28,9 @@ interface TakeOutService {
     @GET("order")
     fun  getOrderInfo(@Query("id") userId:String): Call<ResponseInfo>
 
+    //使用Rxjava组合的接口
+    @GET("order")
+    fun  getOrderInfoByRxjava(@Query("id") userId:String): Observable<ResponseInfo>
 
 
 }
