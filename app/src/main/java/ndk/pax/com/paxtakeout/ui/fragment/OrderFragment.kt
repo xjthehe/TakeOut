@@ -20,9 +20,12 @@ import ndk.pax.com.paxtakeout.utils.TakeoutApp
  */
 
 class OrderFragment:BaseFragment(),OrderFragmentContract.View{
-    override fun onInfoSuccess(){
+    lateinit var adapter: OrderListAdapter
+
+    override fun onInfoSuccess(allOrderList: ArrayList<Order>) {
         //刷新适配器
-        rv_order_list.adapter?.notifyDataSetChanged()
+        //rv_order_list.adapter?.notifyDataSetChanged()
+        adapter.setOrderData(allOrderList)
         srl_order.isRefreshing=false
     }
 
@@ -52,10 +55,14 @@ class OrderFragment:BaseFragment(),OrderFragmentContract.View{
     }
 
     private fun initRecyleView(){
-        rv_order_list.apply {
-            layoutManager = LinearLayoutManager(context)//默认从上到下
-            adapter=OrderListAdapter(context,orderFragmentPresenter.allOrderList)
-        }
+//        rv_order_list.apply {
+//            layoutManager = LinearLayoutManager(context)//默认从上到下
+//            adapter=OrderListAdapter(context)
+//        }
+        rv_order_list.layoutManager=LinearLayoutManager(context)//默认从上到下
+        adapter=OrderListAdapter(context)
+        rv_order_list.adapter=adapter
+
         //swiplayout
         srl_order.setOnRefreshListener(object :SwipeRefreshLayout.OnRefreshListener{
             override fun onRefresh() {

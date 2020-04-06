@@ -73,6 +73,7 @@ class MyReceiver:BroadcastReceiver(){
                 Log.d(TAG, "[MyReceiver] Unhandled intent - " + intent.getAction()!!)
             }
         } catch (e: Exception) {
+            Log.d(TAG, "[MyReceiver] Unhandled intent - " +e.localizedMessage)
 
         }
 

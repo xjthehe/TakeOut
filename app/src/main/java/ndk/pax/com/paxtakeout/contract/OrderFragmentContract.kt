@@ -16,7 +16,7 @@ interface OrderFragmentContract{
     }
 
     interface View{
-        fun onInfoSuccess()
+        fun onInfoSuccess(allOrderList: ArrayList<Order>)
         fun onInfoFail()
     }
 }

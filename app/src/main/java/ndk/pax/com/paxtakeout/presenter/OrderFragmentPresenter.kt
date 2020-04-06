@@ -4,9 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ndk.pax.com.paxtakeout.contract.NetPresenter
 import ndk.pax.com.paxtakeout.contract.OrderFragmentContract
-import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.model.bean.Order
-import org.json.JSONObject
 
 /**
  * User：Rowen
@@ -34,7 +32,7 @@ class OrderFragmentPresenter(val view:OrderFragmentContract.View):OrderFragmentC
         if(orderList.isNotEmpty()){
             allOrderList.clear()
             allOrderList.addAll(orderList)
-            view.onInfoSuccess()
+            view.onInfoSuccess(allOrderList)
         }else{
             allOrderList.clear()
             view.onInfoFail()
