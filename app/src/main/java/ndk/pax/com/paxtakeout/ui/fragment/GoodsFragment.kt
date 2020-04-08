@@ -48,8 +48,9 @@ class GoodsFragment:BaseFragment(),GoodFragmentContract.View{
 
     private fun initRecycleview() {
         rv_goods_type.layoutManager=LinearLayoutManager(context)
-        adapter=GoodTypeAdapter(context)
+        adapter=GoodTypeAdapter(context,this)
         rv_goods_type.adapter=adapter
+
 //        slhlv 商品右侧粘性listview 带分类标题的
         adapterGoods=GoodsAdapter(context)
         slhlv.adapter=adapterGoods

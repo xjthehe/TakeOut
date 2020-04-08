@@ -99,11 +99,10 @@ class GoodsAdapter(val context:Context?):BaseAdapter(), StickyListHeadersAdapter
     override fun getHeaderView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val goodInfo = arrayTypeGoodLists.get(position)
         val typeName = goodInfo.typeName
-
-
-        val textView=TextView(context)
+        val textView:TextView= LayoutInflater.from(context).inflate(R.layout.item_type_header,parent,false) as TextView
+        //val textView=TextView(context)
         textView.text=typeName
-        textView.setTextColor(Color.RED)
+//        textView.setTextColor(Color.RED)
         return textView
     }
 

@@ -60,4 +60,18 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
         businessInfo.enqueue(callBack)
     }
 
+    //根据左侧id  查询右边第一次出现的id
+    fun getGoodsPositionByTypeId(typeId: Int):Int {
+        var position:Int=-1
+        for (j in 0 until arrayTypeGoodLists.size){
+            val goodInfo = arrayTypeGoodLists.get(j)
+            if(goodInfo.typeId ==typeId){
+                position=j
+                break
+            }
+        }
+        return position
+    }
+
+
 }
