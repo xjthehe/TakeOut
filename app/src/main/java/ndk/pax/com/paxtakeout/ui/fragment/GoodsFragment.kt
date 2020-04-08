@@ -19,6 +19,7 @@ import ndk.pax.com.paxtakeout.presenter.GoodFragmentPresenter
  */
 class GoodsFragment:BaseFragment(),GoodFragmentContract.View{
     lateinit var adapter:GoodTypeAdapter//左侧列表刷新
+    lateinit var adapterGoods:GoodsAdapter//右侧列表刷新
     lateinit var arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean>
 
     val goodsFragmentPresenter by lazy{
@@ -28,6 +29,7 @@ class GoodsFragment:BaseFragment(),GoodFragmentContract.View{
     override fun onGoodInfoSuccess(allGoodInfoList: ArrayList<GoodInfo.ListBeanX>, arrayTypeGoodLists: ArrayList<GoodInfo.ListBeanX.ListBean>) {
         Log.e("onGoodInfoSuccess",allGoodInfoList.size.toString())
         adapter.setData(allGoodInfoList,arrayTypeGoodLists)
+        adapterGoods.setData(arrayTypeGoodLists)//刷新右侧商品信息
     }
 
     override fun onGoodInfoError(){
@@ -49,7 +51,8 @@ class GoodsFragment:BaseFragment(),GoodFragmentContract.View{
         adapter=GoodTypeAdapter(context)
         rv_goods_type.adapter=adapter
 //        slhlv 商品右侧粘性listview 带分类标题的
-        slhlv.adapter=GoodsAdapter()
+        adapterGoods=GoodsAdapter(context)
+        slhlv.adapter=adapterGoods
     }
 
 

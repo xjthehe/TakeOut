@@ -18,7 +18,7 @@ import org.json.JSONObject
 
 class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentContract.Presenter,NetPresenter(){
     var allGoodInfoList:ArrayList<GoodInfo.ListBeanX> = ArrayList()
-    lateinit var arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean>
+    var arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean> = ArrayList()
 
 
     override fun parseJson(json: String?){
@@ -36,7 +36,15 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
             Log.e("allGoodInfoList",allGoodInfoList.size.toString())
 
             for (i in 0 until allGoodInfoList.size){
-                arrayTypeGoodLists.addAll(allGoodInfoList.get(i).list!!)
+                val goodTypeInfo=allGoodInfoList.get(i)
+                val aTypeList=goodTypeInfo.list
+                //双向绑定，list属于哪一个type
+                    for (j in 0 until aTypeList!!.size){
+                        val goodsInfo=aTypeList.get(j)
+                        goodsInfo.typeName= goodTypeInfo.name!!
+                        goodsInfo.typeId= goodTypeInfo.id!!
+                    }
+                arrayTypeGoodLists.addAll(aTypeList)
             }
 
             view.onGoodInfoSuccess(allGoodInfoList,arrayTypeGoodLists)

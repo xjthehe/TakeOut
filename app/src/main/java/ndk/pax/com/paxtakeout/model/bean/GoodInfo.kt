@@ -56,6 +56,15 @@ class GoodInfo{
             var newPrice: String? = null
             var oldPrice: Int = 0
             var sellerId: Int = 0
+
+            //此商品属于哪个类别以及类别名称
+            var typeId:Int=0
+            var typeName:String=""
+
+
+
+
+
         }
     }
 }
