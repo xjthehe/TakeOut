@@ -1,10 +1,12 @@
 package ndk.pax.com.paxtakeout.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import ndk.pax.com.paxtakeout.model.SellerListItem
+import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
 import ndk.pax.com.paxtakeout.widget.HomeHeadView
 import ndk.pax.com.paxtakeout.widget.HomeListItemView
 
@@ -55,13 +57,18 @@ class HomeListAdapter(val context:Context,val mdatas:ArrayList<SellerListItem>):
         }else{
             val homeListItemView= holder.itemView as HomeListItemView
             homeListItemView.bindView(mdatas[position-1])
+            homeListItemView.setOnClickListener{
+                val intent:Intent=Intent(context, BusinessActivity::class.java)
+                context.startActivity(intent)
+            }
         }
-
     }
 
     class HomeItemViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
 
     }
+
+
     class HomeHeadViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
 
     }

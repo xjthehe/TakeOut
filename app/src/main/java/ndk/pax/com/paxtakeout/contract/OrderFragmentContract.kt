@@ -12,7 +12,6 @@ import ndk.pax.com.paxtakeout.model.bean.Order
 interface OrderFragmentContract{
     interface Presenter:BasePresenter{
         fun getOrderInfo(userId:String)
-
     }
 
     interface View{

@@ -20,6 +20,7 @@ class HomeListItemView(context: Context?, attrs: AttributeSet?=null) : RelativeL
 
     init {
         View.inflate(context, R.layout.item_seller,this)
+
     }
 
     fun bindView(sellerListItem: SellerListItem){
