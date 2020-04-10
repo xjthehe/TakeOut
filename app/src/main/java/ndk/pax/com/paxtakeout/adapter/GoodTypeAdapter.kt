@@ -28,6 +28,7 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
 
     var goodsTypeList:List<GoodInfo.ListBeanX> = listOf()
 
+    //数据载入,刷新适配器
     fun setData(goodsTypeList: List<GoodInfo.ListBeanX>, arrayTypeGoodLists: ArrayList<GoodInfo.ListBeanX.ListBean>){
         this.goodsTypeList=goodsTypeList
         notifyDataSetChanged()
@@ -43,7 +44,6 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
     override fun getItemCount(): Int=goodsTypeList.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         val goodsTypeItemHolder=holder as GoodTypeViewHolder
         goodsTypeItemHolder.bindData(goodsTypeList.get(position),position)
     }
@@ -52,10 +52,15 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
 
     inner class GoodTypeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvType:TextView
+        val tvRedDotCount:TextView//右上角红色数量
+
         var mPosition:Int=0
         lateinit var goodTypeInfo:GoodInfo.ListBeanX
         init {
             tvType= itemView.findViewById<TextView>(R.id.type)
+            tvRedDotCount= itemView.findViewById<TextView>(R.id.tvRedDotCount)
+
+            //左侧点击事件
             itemView.setOnClickListener {
                 Log.e("setOnClickListener",mPosition.toString())
                 selectPosition=mPosition
@@ -63,7 +68,7 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
                 //右侧列表转到该类型的第一个商品
                 val typeId=goodTypeInfo.id
                 //遍历所有集合找到第一个id相同的
-               val position=goodFragment.goodsFragmentPresenter.getGoodsPositionByTypeId(typeId)
+                val position=goodFragment.goodsFragmentPresenter.getGoodsPositionByTypeId(typeId)
                 //右侧listview 选中position部分
                 goodFragment.slhlv.setSelection(position)
 
@@ -73,6 +78,7 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
         fun bindData(goodInfo: GoodInfo.ListBeanX, position: Int){
             mPosition=position
             this.goodTypeInfo=goodInfo
+
             if(position==selectPosition){
                 itemView.setBackgroundColor(Color.WHITE)
                 tvType.setTextColor(Color.BLACK)
@@ -82,7 +88,16 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
                 tvType.setTextColor(Color.GRAY)
                 tvType.setTypeface(Typeface.DEFAULT)
             }
+
             tvType.text=goodInfo.name
+            tvRedDotCount.text=goodInfo.redDotCount.toString()
+
+            if(goodTypeInfo.redDotCount>0){
+                tvRedDotCount.visibility=View.VISIBLE
+            }else{
+                tvRedDotCount.visibility=View.GONE
+            }
+
         }
     }
 

@@ -2,12 +2,19 @@ package ndk.pax.com.paxtakeout.adapter
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Paint
+import android.support.v4.app.Fragment
+import android.support.v7.view.menu.ShowableListMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.*
 import android.widget.*
+import com.heima.takeout.utils.PriceFormater
+import com.squareup.picasso.Picasso
 import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.model.bean.GoodInfo
+import ndk.pax.com.paxtakeout.ui.fragment.GoodsFragment
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
 
 /**
@@ -17,23 +24,165 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
  *
  */
 
-class GoodsAdapter(val context:Context?):BaseAdapter(), StickyListHeadersAdapter{
-     var arrayTypeGoodLists:List<GoodInfo.ListBeanX.ListBean> = ArrayList()
+class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdapter(), StickyListHeadersAdapter{
+    var arrayTypeGoodLists:List<GoodInfo.ListBeanX.ListBean> = ArrayList()
 
     fun setData(arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean>){
         this.arrayTypeGoodLists=arrayTypeGoodLists
         notifyDataSetChanged()
     }
 
+    companion object{
+        val DURATION:Long=1000
+    }
     //内部类 holder
     inner class GoodsItemHolder(itemView:View) : View.OnClickListener {
-        override fun onClick(v: View?) {
+        lateinit var goodInfo: GoodInfo.ListBeanX.ListBean
 
+        override fun onClick(v: View?){
+            var isAdd:Boolean=false
+            when(v?.id){
+                R.id.ib_add->{
+                    isAdd=true
+                    doAddOperation()
+                }
+                R.id.ib_minus->{
+                    isAdd=false
+                    doMinusOperation()
+                }
+            }
+            processRedDotCount(isAdd)
+        }
+
+        private fun  processRedDotCount(isAdd: Boolean) {
+            //1.找到此商品属于哪个类别
+            val typeId = goodInfo.typeId
+
+            //2.此类别在左侧位置
+            val typePosition = goodFragment.goodsFragmentPresenter.getTypePositionByTypeId(typeId)
+
+            //3最后找出tvReddotCount
+            val goodsTypeInfo = goodFragment.goodsFragmentPresenter.allGoodTypeList.get(typePosition)
+
+            var redDotCount = goodsTypeInfo.redDotCount
+            if(isAdd){
+                redDotCount++
+            }else{
+                redDotCount--
+            }
+            goodsTypeInfo.redDotCount=redDotCount
+            //刷新适配器
+            goodFragment.goodTypeAdapter.notifyDataSetChanged()
+        }
+
+        private fun doMinusOperation() {
+            var count=goodInfo.count
+            if(count==1){
+                //点击加号 平移+apha动画
+                var hindAnimationSet=getHindAnimationSet()
+                tvCount.startAnimation(hindAnimationSet)
+                btnMinuss.startAnimation(hindAnimationSet)
+            }
+            count--
+            goodInfo.count=count
+            notifyDataSetChanged()
+        }
+
+        //点击数量添加按钮
+        private fun doAddOperation(){
+            var count=goodInfo.count
+            if(count==0){
+                //点击加号 平移+apha动画
+                var animationSet=getShowAnimationSet()
+                tvCount.startAnimation(animationSet)
+                btnMinuss.startAnimation(animationSet)
+            }
+            count++
+            goodInfo.count=count
+            notifyDataSetChanged()
+        }
+
+        private fun getHindAnimationSet():AnimationSet{
+            val showAnimationSet=AnimationSet(false)
+            showAnimationSet.duration= DURATION
+            //透明度动画
+            val alphaAnim=AlphaAnimation(1f,0.0f)
+            alphaAnim.duration= DURATION
+            showAnimationSet.addAnimation(alphaAnim)
+
+            //旋转动画
+            val rotateAnim:Animation=RotateAnimation(720f,0f,
+                    Animation.RELATIVE_TO_SELF,0.5f,
+                    Animation.RELATIVE_TO_SELF,0.5f)
+            rotateAnim.duration= DURATION
+            showAnimationSet.addAnimation(rotateAnim)
+
+            //平移
+            val translateAnim:Animation=TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF,0f,
+                    Animation.RELATIVE_TO_SELF,2f,
+                    Animation.RELATIVE_TO_SELF,0f,
+                    Animation.RELATIVE_TO_SELF,0f)
+            translateAnim.duration= DURATION
+            showAnimationSet.addAnimation(translateAnim)
+            return showAnimationSet
         }
 
 
+
+        private fun  getShowAnimationSet(): AnimationSet{
+            val showAnimationSet=AnimationSet(false)
+            showAnimationSet.duration= DURATION
+
+            //透明度动画
+            val alphaAnim=AlphaAnimation(0.0f,1.0f)
+            alphaAnim.duration= DURATION
+            showAnimationSet.addAnimation(alphaAnim)
+
+            //旋转动画
+            val rotateAnim:Animation=RotateAnimation(0f,720f,
+                    Animation.RELATIVE_TO_SELF,0.5f,
+                    Animation.RELATIVE_TO_SELF,0.5f)
+            rotateAnim.duration= DURATION
+            showAnimationSet.addAnimation(rotateAnim)
+
+            //平移
+            val translateAnim:Animation=TranslateAnimation(
+                    Animation.RELATIVE_TO_SELF,2f,
+                    Animation.RELATIVE_TO_SELF,0f,
+                    Animation.RELATIVE_TO_SELF,0f,
+                    Animation.RELATIVE_TO_SELF,0f)
+            translateAnim.duration= DURATION
+            showAnimationSet.addAnimation(translateAnim)
+            return showAnimationSet
+        }
+
         fun bindData(goodInfo: GoodInfo.ListBeanX.ListBean) {
+            this.goodInfo=goodInfo
+            Picasso.with(context).load(goodInfo.icon).into(ivIcon)
             tvName.text=goodInfo.name
+            //商品条目赋值
+            tvForm.text=goodInfo.form//
+            tvMonthSale.text="月售${goodInfo.monthSaleNum}份"
+            tvNewPrice.text=PriceFormater.format(goodInfo.newPrice!!.toFloat())
+            tvOldPrice.text=PriceFormater.format(goodInfo.oldPrice!!.toFloat())
+            tvOldPrice.paint.flags=Paint.STRIKE_THRU_TEXT_FLAG
+
+            if(goodInfo.oldPrice>0){
+                tvOldPrice.visibility=View.VISIBLE
+            }else{
+                tvOldPrice.visibility=View.GONE
+            }
+            tvCount.text=goodInfo.count.toString()
+            //商品笔数 加减按钮
+            if(goodInfo.count>0){
+                tvCount.visibility=View.VISIBLE
+                btnMinuss.visibility=View.VISIBLE
+            }else{
+                tvCount.visibility=View.INVISIBLE
+                btnMinuss.visibility=View.INVISIBLE
+            }
+
 
         }
 
@@ -68,23 +217,23 @@ class GoodsAdapter(val context:Context?):BaseAdapter(), StickyListHeadersAdapter
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-            var itemView:View
-            val goodHolder:GoodsItemHolder
-            if(convertView==null){
-                itemView=LayoutInflater.from(context).inflate(R.layout.item_goods,parent,false)
-                goodHolder=GoodsItemHolder(itemView)
-                itemView.tag=goodHolder
-            }else{
-                itemView=convertView
-                goodHolder=itemView.tag as GoodsItemHolder
-            }
-            //绑定数据
-            goodHolder.bindData(arrayTypeGoodLists.get(position))
-            return itemView
+        var itemView:View
+        val goodHolder:GoodsItemHolder
+        if(convertView==null){
+            itemView=LayoutInflater.from(context).inflate(R.layout.item_goods,parent,false)
+            goodHolder=GoodsItemHolder(itemView)
+            itemView.tag=goodHolder
+        }else{
+            itemView=convertView
+            goodHolder=itemView.tag as GoodsItemHolder
+        }
+        //绑定数据
+        goodHolder.bindData(arrayTypeGoodLists.get(position))
+        return itemView
     }
 
     override fun getItem(position: Int): Any {
-            return arrayTypeGoodLists.get(position)
+        return arrayTypeGoodLists.get(position)
     }
 
     override fun getItemId(position: Int): Long =position.toLong()

@@ -13,7 +13,6 @@ class GoodInfo{
     fun getList(): List<ListBeanX>? {
         return list
     }
-
     fun setList(list: List<ListBeanX>) {
         this.list = list
     }
@@ -25,12 +24,10 @@ class GoodInfo{
          * list : [{"bargainPrice":true,"form":"肉末烧汁茄子+千叶豆腐+小食+时蔬+含粗粮米饭)","icon":"http://203.195.245.169:8080/TakeOutService/imgs/goods/caiping_taocan.webp","id":1001,"monthSaleNum":53,"name":"肉末烧汁茄子+千叶豆腐套餐(含粗粮米饭)","new":false,"newPrice":"13.9","oldPrice":30,"sellerId":1},{"bargainPrice":true,"form":"肉末烧汁茄子+榄菜肉末四季豆+小食+时蔬+含粗粮米饭)","icon":"http://203.195.245.169:8080/TakeOutService/imgs/goods/caiping_taocan.webp","id":1002,"monthSaleNum":37,"name":"肉末烧汁茄子+四季豆套餐(含粗粮米饭)","new":false,"newPrice":"13.9","oldPrice":30,"sellerId":1},{"bargainPrice":true,"form":"手撕杏鲍菇+千叶豆腐+小食+时蔬+含粗粮米饭)","icon":"http://203.195.245.169:8080/TakeOutService/imgs/goods/caiping_taocan.webp","id":1003,"monthSaleNum":27,"name":"手撕杏鲍菇+千叶豆腐套餐(含粗粮米饭)","new":false,"newPrice":"13.9","oldPrice":30,"sellerId":1},{"bargainPrice":true,"form":"肉末烧汁茄子+杏鲍菇+小食+时蔬+含粗粮米饭)","icon":"http://203.195.245.169:8080/TakeOutService/imgs/goods/caiping_taocan.webp","id":1004,"monthSaleNum":24,"name":"肉末烧汁茄子+杏鲍菇套餐(含粗粮米饭)","new":false,"newPrice":"13.9","oldPrice":30,"sellerId":1},{"bargainPrice":true,"form":"榄菜肉末四季豆+千叶豆腐+小食+时蔬+含粗粮米饭)","icon":"http://203.195.245.169:8080/TakeOutService/imgs/goods/caiping_taocan.webp","id":1005,"monthSaleNum":53,"name":"榄菜肉末四季豆+千叶豆腐套餐(含粗粮米饭)","new":false,"newPrice":"13.9","oldPrice":30,"sellerId":1},{"bargainPrice":true,"form":"榄菜肉末四季豆+手撕杏鲍菇+小食+时蔬+含粗粮米饭)","icon":"http://203.195.245.169:8080/TakeOutService/imgs/goods/caiping_taocan.webp","id":1006,"monthSaleNum":53,"name":"榄菜肉末四季豆+手撕杏鲍菇套餐(含粗粮米饭)","new":false,"newPrice":"13.9","oldPrice":30,"sellerId":1}]
          * name : 13.9特价套餐
          */
-
         var id: Int = 0
         var info: String? = null
         var name: String? = null
         var list: List<ListBean>? = null
-
         class ListBean {
             /**
              * bargainPrice : true
@@ -60,11 +57,8 @@ class GoodInfo{
             //此商品属于哪个类别以及类别名称
             var typeId:Int=0
             var typeName:String=""
-
-
-
-
-
+            var count:Int=0
         }
+        var redDotCount: Int=0
     }
 }

@@ -17,8 +17,8 @@ import org.json.JSONObject
  */
 
 class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentContract.Presenter,NetPresenter(){
-    var allGoodInfoList:ArrayList<GoodInfo.ListBeanX> = ArrayList()
-    var arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean> = ArrayList()
+    var allGoodTypeList:ArrayList<GoodInfo.ListBeanX> = ArrayList()
+    var allGoodInfoList:ArrayList<GoodInfo.ListBeanX.ListBean> = ArrayList()
 
 
     override fun parseJson(json: String?){
@@ -31,25 +31,25 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
         var goodInfoList:List<GoodInfo.ListBeanX> = gson.fromJson(allString,object: TypeToken<List<GoodInfo.ListBeanX>>(){}.type)
 
         if(goodInfoList.isNotEmpty()){
-            allGoodInfoList.clear()
-            allGoodInfoList.addAll(goodInfoList)
-            Log.e("allGoodInfoList",allGoodInfoList.size.toString())
+            allGoodTypeList.clear()
+            allGoodTypeList.addAll(goodInfoList)
+            Log.e("allGoodTypeList",allGoodTypeList.size.toString())
 
-            for (i in 0 until allGoodInfoList.size){
-                val goodTypeInfo=allGoodInfoList.get(i)
+            for (i in 0 until allGoodTypeList.size){
+                val goodTypeInfo=allGoodTypeList.get(i)
                 val aTypeList=goodTypeInfo.list
                 //双向绑定，list属于哪一个type
-                    for (j in 0 until aTypeList!!.size){
-                        val goodsInfo=aTypeList.get(j)
-                        goodsInfo.typeName= goodTypeInfo.name!!
-                        goodsInfo.typeId= goodTypeInfo.id!!
-                    }
-                arrayTypeGoodLists.addAll(aTypeList)
+                for (j in 0 until aTypeList!!.size){
+                    val goodsInfo=aTypeList.get(j)
+                    goodsInfo.typeName= goodTypeInfo.name!!
+                    goodsInfo.typeId= goodTypeInfo.id!!
+                }
+                allGoodInfoList.addAll(aTypeList)
             }
 
-            view.onGoodInfoSuccess(allGoodInfoList,arrayTypeGoodLists)
+            view.onGoodInfoSuccess(allGoodTypeList,allGoodInfoList)
         }else{
-            allGoodInfoList.clear()
+            allGoodTypeList.clear()
             view.onGoodInfoError()
         }
     }
@@ -63,10 +63,23 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
     //根据左侧id  查询右边第一次出现的id
     fun getGoodsPositionByTypeId(typeId: Int):Int {
         var position:Int=-1
-        for (j in 0 until arrayTypeGoodLists.size){
-            val goodInfo = arrayTypeGoodLists.get(j)
+        for (j in 0 until allGoodInfoList.size){
+            val goodInfo = allGoodInfoList.get(j)
             if(goodInfo.typeId ==typeId){
                 position=j
+                break
+            }
+        }
+        return position
+    }
+
+    //根据右侧id  查询左边第一次出现的id
+    fun getTypePositionByTypeId(typeId: Int):Int {
+        var position:Int=-1
+        for (i in 0 until allGoodTypeList.size){
+            val goodType = allGoodTypeList.get(i)
+            if(goodType.id==typeId){
+                position=i
                 break
             }
         }
