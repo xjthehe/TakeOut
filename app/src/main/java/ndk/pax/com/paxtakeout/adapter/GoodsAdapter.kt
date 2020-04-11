@@ -1,10 +1,7 @@
 package ndk.pax.com.paxtakeout.adapter
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Paint
-import android.support.v4.app.Fragment
-import android.support.v7.view.menu.ShowableListMenu
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +11,7 @@ import com.heima.takeout.utils.PriceFormater
 import com.squareup.picasso.Picasso
 import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.model.bean.GoodInfo
+import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
 import ndk.pax.com.paxtakeout.ui.fragment.GoodsFragment
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
 
@@ -25,10 +23,10 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
  */
 
 class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdapter(), StickyListHeadersAdapter{
-    var arrayTypeGoodLists:List<GoodInfo.ListBeanX.ListBean> = ArrayList()
-
+    var goodInfoList:List<GoodInfo.ListBeanX.ListBean> = ArrayList()
+     //添加数据，刷新适配器
     fun setData(arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean>){
-        this.arrayTypeGoodLists=arrayTypeGoodLists
+        this.goodInfoList=arrayTypeGoodLists
         notifyDataSetChanged()
     }
 
@@ -36,7 +34,7 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
         val DURATION:Long=1000
     }
     //内部类 holder
-    inner class GoodsItemHolder(itemView:View) : View.OnClickListener {
+    inner class GoodsItemHolder(itemView:View) : View.OnClickListener{
         lateinit var goodInfo: GoodInfo.ListBeanX.ListBean
 
         override fun onClick(v: View?){
@@ -45,6 +43,7 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
                 R.id.ib_add->{
                     isAdd=true
                     doAddOperation()
+                    
                 }
                 R.id.ib_minus->{
                     isAdd=false
@@ -52,6 +51,12 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
                 }
             }
             processRedDotCount(isAdd)
+            updateCartUi(isAdd)
+        }
+
+         //更新购物车UI
+        private fun updateCartUi(isAdd: Boolean) {
+             (goodFragment.activity as BusinessActivity).updateCart()
         }
 
         private fun  processRedDotCount(isAdd: Boolean) {
@@ -74,8 +79,8 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
             //刷新适配器
             goodFragment.goodTypeAdapter.notifyDataSetChanged()
         }
-
-        private fun doMinusOperation() {
+        //减号按钮
+        private fun doMinusOperation(){
             var count=goodInfo.count
             if(count==1){
                 //点击加号 平移+apha动画
@@ -100,8 +105,76 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
             count++
             goodInfo.count=count
             notifyDataSetChanged()
+            //抛物线
+            //1.克隆加号按钮
+            val ib=ImageButton(context)
+            ib.setBackgroundResource(R.drawable.button_add)
+
+            //2.添加到activity
+            var srcLocation:IntArray= IntArray(2) //加号按钮的位置
+            var cartLocation:IntArray= IntArray(2)//购物车位置
+
+            btnAdd.getLocationInWindow(srcLocation)  //获取view绝对位置方法
+            ib.x= srcLocation[0].toFloat()
+            ib.y= srcLocation[1].toFloat()
+
+            val businessActivity = goodFragment.activity as BusinessActivity
+            businessActivity.addImageButton(ib,btnAdd.width,btnAdd.height)
+            cartLocation=businessActivity.getCartLocation()
+
+            //3. 抛物线动画（水平位移+垂直加速度）
+            val animationSet:AnimationSet= getParabolaAnimation(ib,srcLocation,cartLocation)
+            // 回收克隆加号
+            ib.startAnimation(animationSet)
         }
 
+        //抛物线运动
+        private fun getParabolaAnimation(ib: ImageButton, srcLocation: IntArray, desLocation: IntArray): AnimationSet {
+            val paraboAnimationSet: AnimationSet = AnimationSet(false)
+            paraboAnimationSet.duration = DURATION
+
+            val translateAnimationX = TranslateAnimation(
+                    Animation.ABSOLUTE, 0f,
+                    Animation.ABSOLUTE, desLocation[0].toFloat()-srcLocation[0].toFloat(),
+                    Animation.ABSOLUTE, 0f,
+                    Animation.ABSOLUTE, 0f)
+            translateAnimationX.duration = DURATION
+            paraboAnimationSet.addAnimation(translateAnimationX)
+
+
+            val translateAnimationY = TranslateAnimation(
+                    Animation.ABSOLUTE,0f,
+                    Animation.ABSOLUTE, 0f,
+                    Animation.ABSOLUTE, 0f,
+                    Animation.ABSOLUTE, desLocation[1].toFloat()-srcLocation[1].toFloat())
+            translateAnimationY.duration = DURATION
+            translateAnimationY.setInterpolator(AccelerateInterpolator())//Y轴加速度
+            paraboAnimationSet.addAnimation(translateAnimationY)
+
+            //动画监听
+            paraboAnimationSet.setAnimationListener(object :Animation.AnimationListener{
+                override fun onAnimationRepeat(animation: Animation?) {
+
+                }
+
+                override fun onAnimationEnd(animation: Animation?) {
+                    val parent = ib.parent
+                    if(parent!=null){
+                        (parent as ViewGroup).removeView(ib)
+                    }
+                }
+
+                override fun onAnimationStart(animation: Animation?) {
+
+                }
+
+            })
+
+             return paraboAnimationSet;
+        }
+
+
+        //隐藏动画   animationSet.addAnimation(translateAnimationX)
         private fun getHindAnimationSet():AnimationSet{
             val showAnimationSet=AnimationSet(false)
             showAnimationSet.duration= DURATION
@@ -127,13 +200,10 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
             showAnimationSet.addAnimation(translateAnim)
             return showAnimationSet
         }
-
-
-
+        //显示动画
         private fun  getShowAnimationSet(): AnimationSet{
             val showAnimationSet=AnimationSet(false)
             showAnimationSet.duration= DURATION
-
             //透明度动画
             val alphaAnim=AlphaAnimation(0.0f,1.0f)
             alphaAnim.duration= DURATION
@@ -196,7 +266,6 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
         lateinit var btnAdd: ImageButton
         lateinit var btnMinuss:ImageButton
 
-
         init {
             ivIcon= itemView.findViewById<ImageView>(R.id.iv_icon)
             tvName= itemView.findViewById<TextView>(R.id.tv_name)
@@ -213,7 +282,6 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
             btnAdd.setOnClickListener(this)
             btnMinuss.setOnClickListener(this)
         }
-
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -228,30 +296,28 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
             goodHolder=itemView.tag as GoodsItemHolder
         }
         //绑定数据
-        goodHolder.bindData(arrayTypeGoodLists.get(position))
+        goodHolder.bindData(goodInfoList.get(position))
         return itemView
     }
 
     override fun getItem(position: Int): Any {
-        return arrayTypeGoodLists.get(position)
+        return goodInfoList.get(position)
     }
 
     override fun getItemId(position: Int): Long =position.toLong()
 
-    override fun getCount(): Int =arrayTypeGoodLists.size
+    override fun getCount(): Int =goodInfoList.size
 
     override fun getHeaderId(position: Int): Long {
-        val goodInfo = arrayTypeGoodLists.get(position)
+        val goodInfo = goodInfoList.get(position)
         return goodInfo.typeId.toLong()
     }
 
     override fun getHeaderView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val goodInfo = arrayTypeGoodLists.get(position)
+        val goodInfo = goodInfoList.get(position)
         val typeName = goodInfo.typeName
         val textView:TextView= LayoutInflater.from(context).inflate(R.layout.item_type_header,parent,false) as TextView
-        //val textView=TextView(context)
         textView.text=typeName
-//        textView.setTextColor(Color.RED)
         return textView
     }
 

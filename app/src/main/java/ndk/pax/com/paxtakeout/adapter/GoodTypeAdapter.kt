@@ -29,7 +29,7 @@ class GoodTypeAdapter(val context:Context?,val goodFragment:GoodsFragment):Recyc
     var goodsTypeList:List<GoodInfo.ListBeanX> = listOf()
 
     //数据载入,刷新适配器
-    fun setData(goodsTypeList: List<GoodInfo.ListBeanX>, arrayTypeGoodLists: ArrayList<GoodInfo.ListBeanX.ListBean>){
+    fun setData(goodsTypeList: List<GoodInfo.ListBeanX>){
         this.goodsTypeList=goodsTypeList
         notifyDataSetChanged()
     }

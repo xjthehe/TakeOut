@@ -85,6 +85,19 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
         }
         return position
     }
+    //获取右侧添加过到购物车的集合
+    fun getCartGoodList():List<GoodInfo.ListBeanX.ListBean> {
+        var goodInfoList:ArrayList<GoodInfo.ListBeanX.ListBean> = ArrayList()
+
+        for (i in 0 until allGoodInfoList.size ){
+            var goodInfo=allGoodInfoList[i]
+            val count = goodInfo.count
+             if(count>0){
+                 goodInfoList.add(goodInfo)
+             }
+        }
+        return goodInfoList;
+    }
 
 
 }
