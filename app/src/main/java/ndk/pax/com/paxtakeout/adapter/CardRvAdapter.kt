@@ -101,7 +101,7 @@ class CardRvAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.Vi
             var count=goodInfo.count
             if(count==1){
                 cardInfoList.remove(goodInfo)
-                if(cardInfoList.size==0){
+                if(cardInfoList.size==0){//购物车最后一个类别也没有时候，隐藏购物车
                     (context as BusinessActivity).showOrHindCart()
                 }
             }else{
