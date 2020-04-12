@@ -12,6 +12,7 @@ import ndk.pax.com.paxtakeout.adapter.GoodsAdapter
 import ndk.pax.com.paxtakeout.contract.GoodFragmentContract
 import ndk.pax.com.paxtakeout.model.bean.GoodInfo
 import ndk.pax.com.paxtakeout.presenter.GoodFragmentPresenter
+import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
 
 /**
  * User：Rowen
@@ -24,7 +25,7 @@ class GoodsFragment : BaseFragment(), GoodFragmentContract.View {
 //    lateinit var arrayTypeGoodLists:ArrayList<GoodInfo.ListBeanX.ListBean>
 
     val goodsFragmentPresenter by lazy {
-        GoodFragmentPresenter(this)
+        GoodFragmentPresenter(this,this)
     }
     //
     override fun onGoodInfoSuccess(allGoodInfoList: ArrayList<GoodInfo.ListBeanX>, arrayTypeGoodLists: ArrayList<GoodInfo.ListBeanX.ListBean>) {
@@ -62,7 +63,7 @@ class GoodsFragment : BaseFragment(), GoodFragmentContract.View {
 
     override fun init() {
         initRecycleview()
-        goodsFragmentPresenter.getGoodInfo(1)
+        goodsFragmentPresenter.getGoodInfo((activity as BusinessActivity).seller.id.toInt())
     }
 
     private fun initRecycleview() {

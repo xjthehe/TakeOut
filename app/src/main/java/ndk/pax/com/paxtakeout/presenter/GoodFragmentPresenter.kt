@@ -7,6 +7,9 @@ import com.google.gson.reflect.TypeToken
 import ndk.pax.com.paxtakeout.contract.GoodFragmentContract
 import ndk.pax.com.paxtakeout.contract.NetPresenter
 import ndk.pax.com.paxtakeout.model.bean.GoodInfo
+import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
+import ndk.pax.com.paxtakeout.ui.fragment.GoodsFragment
+import ndk.pax.com.paxtakeout.utils.TakeoutApp
 import org.json.JSONObject
 
 /**
@@ -16,10 +19,10 @@ import org.json.JSONObject
  *
  */
 
-class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentContract.Presenter,NetPresenter(){
+class GoodFragmentPresenter(val view:GoodFragmentContract.View,val goodsFragment:GoodsFragment):GoodFragmentContract.Presenter,NetPresenter(){
     var allGoodTypeList:ArrayList<GoodInfo.ListBeanX> = ArrayList()
     var allGoodInfoList:ArrayList<GoodInfo.ListBeanX.ListBean> = ArrayList()
-
+    var aTypeCount:Int=0
 
     override fun parseJson(json: String?){
         Log.e("GoodFragmentPresenter",json)
@@ -27,6 +30,12 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
         val gson= Gson()
         val jsonObj= JSONObject(json)
         val allString=jsonObj.getString("list")
+
+        //判断是否有缓存
+        val hasSelectInfo=(goodsFragment.activity as BusinessActivity).hasSelectInfo
+
+
+
         //进行解析,以上必须注意下
         var goodInfoList:List<GoodInfo.ListBeanX> = gson.fromJson(allString,object: TypeToken<List<GoodInfo.ListBeanX>>(){}.type)
 
@@ -37,15 +46,27 @@ class GoodFragmentPresenter(val view:GoodFragmentContract.View):GoodFragmentCont
 
             for (i in 0 until allGoodTypeList.size){
                 val goodTypeInfo=allGoodTypeList.get(i)
+                //如果有缓存，添加红点个数【粗粮多少个】
+                if(hasSelectInfo){
+                    aTypeCount= TakeoutApp.inStance.queryCacheSelectedInfoByTypeId(goodTypeInfo.id)
+                    goodTypeInfo.redDotCount=aTypeCount//一个类别的记录
+                }
                 val aTypeList=goodTypeInfo.list
                 //双向绑定，list属于哪一个type
                 for (j in 0 until aTypeList!!.size){
                     val goodsInfo=aTypeList.get(j)
+                    //继续判断馒头在不在缓存,有缓存，提前把集合里面count属性赋值
+                    if(aTypeCount>0){
+                        val goodCount = TakeoutApp.inStance.queryCacheSelectedInfoByGoodsId(goodsInfo.id)
+                        goodsInfo.count=goodCount//具体商品记录
+                    }
                     goodsInfo.typeName= goodTypeInfo.name!!
                     goodsInfo.typeId= goodTypeInfo.id!!
                 }
                 allGoodInfoList.addAll(aTypeList)
             }
+            //更新购物车UI
+            (goodsFragment.activity as BusinessActivity).updateCart()
 
             view.onGoodInfoSuccess(allGoodTypeList,allGoodInfoList)
         }else{

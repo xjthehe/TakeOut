@@ -15,6 +15,8 @@ import ndk.pax.com.paxtakeout.model.bean.GoodInfo
 import ndk.pax.com.paxtakeout.model.bean.goodInfo
 import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
 import ndk.pax.com.paxtakeout.ui.fragment.GoodsFragment
+import ndk.pax.com.paxtakeout.utils.Constants
+import ndk.pax.com.paxtakeout.utils.TakeoutApp
 
 /**
  * User：Rowen
@@ -104,8 +106,11 @@ class CardRvAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.Vi
                 if(cardInfoList.size==0){//购物车最后一个类别也没有时候，隐藏购物车
                     (context as BusinessActivity).showOrHindCart()
                 }
+                //删除缓存
+                TakeoutApp.inStance.deleteCacheSelectedInfo(goodInfo.id)
             }else{
-
+                //更新缓存
+                TakeoutApp.inStance.updateCacheSelectedInfo(goodInfo.id, Constants.MINUS)
             }
             count--
             goodInfo.count=count
@@ -117,6 +122,10 @@ class CardRvAdapter(val context: Context) : RecyclerView.Adapter<RecyclerView.Vi
         private fun doAddOperation() {
             //数据层count
             var count=goodInfo.count
+
+            //更新缓存
+            TakeoutApp.inStance.updateCacheSelectedInfo(goodInfo.id, Constants.ADD)
+
             count++
             goodInfo.count=count
             //购物车内部数量与价格刷新

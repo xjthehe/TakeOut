@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
+import ndk.pax.com.paxtakeout.utils.TakeoutApp
 import ndk.pax.com.paxtakeout.widget.HomeHeadView
 import ndk.pax.com.paxtakeout.widget.HomeListItemView
 
@@ -56,9 +57,19 @@ class HomeListAdapter(val context:Context,val mdatas:ArrayList<SellerListItem>):
             homeHeadView.bindView("我是大哥。。。。。。。。。。。。。。")
         }else{
             val homeListItemView= holder.itemView as HomeListItemView
+            val seller=mdatas[position-1]
             homeListItemView.bindView(mdatas[position-1])
             homeListItemView.setOnClickListener{
                 val intent:Intent=Intent(context, BusinessActivity::class.java)
+                //读取是否有缓存信息
+                var count: Int = TakeoutApp.inStance.queryCacheSelectedInfoBySellerId(seller.id.toInt())
+                var hasSelectInfo=false
+                if(count>0){//有点餐信息
+                    hasSelectInfo=true
+                }
+                intent.putExtra("hasSelectInfo",hasSelectInfo)
+                intent.putExtra("seller",seller)
+
                 context.startActivity(intent)
             }
         }

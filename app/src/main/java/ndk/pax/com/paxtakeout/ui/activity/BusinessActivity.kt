@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.adapter.BusinessFragmentPagerAdapter
 import ndk.pax.com.paxtakeout.adapter.CardRvAdapter
 import ndk.pax.com.paxtakeout.extentions.dip2px
+import ndk.pax.com.paxtakeout.model.SellerListItem
 import ndk.pax.com.paxtakeout.model.bean.GoodInfo
 import ndk.pax.com.paxtakeout.model.bean.goodInfo
 import ndk.pax.com.paxtakeout.ui.fragment.CommentsFragment
@@ -36,79 +38,81 @@ import java.util.*
 
 class BusinessActivity : BaseActivity(), View.OnClickListener {
     var bottomSheetView: View? = null
-    lateinit var cartRv:RecyclerView
-    lateinit var tvClear:TextView
+    lateinit var cartRv: RecyclerView
+    lateinit var tvClear: TextView
     lateinit var cardAdapter: CardRvAdapter
-    lateinit var goodsFragment:GoodsFragment
-    lateinit var   goodInfos:GoodInfo.ListBeanX.ListBean
+    lateinit var goodsFragment: GoodsFragment
+    lateinit var goodInfos: GoodInfo.ListBeanX.ListBean
+    var hasSelectInfo = false
+    lateinit var seller: SellerListItem
+    lateinit var dialoge: Dialog
+
+
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.bottom -> {
                 showOrHindCart()
             }
-
-
         }
     }
 
-    lateinit var dialoge:Dialog
     //弹出购物车
-     fun showOrHindCart() {
+    fun showOrHindCart() {
         if (bottomSheetView == null) {
             bottomSheetView = LayoutInflater.from(this).inflate(R.layout.cart_list, window.decorView as ViewGroup, false)
             cartRv = bottomSheetView!!.findViewById<RecyclerView>(R.id.rvCart)
             tvClear = bottomSheetView!!.findViewById<TextView>(R.id.tvClear)//清空购物车
             //清空购物车
             tvClear.setOnClickListener {
-                val builder=AlertDialog.Builder(this)
+                val builder = AlertDialog.Builder(this)
                 builder.setTitle("确认不吃了么")
-                builder.setPositiveButton("是，不吃了",object :DialogInterface.OnClickListener{
+                builder.setPositiveButton("是，不吃了", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         val cartGoodList = goodsFragment.goodsFragmentPresenter.getCartGoodList()
-                            for(i in 0 until cartGoodList.size){
-                                //清空购物车
-                                goodInfos= cartGoodList.get(i)
-                                goodInfos.count=0
+                        for (i in 0 until cartGoodList.size) {
+                            //清空购物车
+                            goodInfos = cartGoodList.get(i)
+                            goodInfos.count = 0
 
-                                //清除左侧红点
-                                val typeId = goodInfos.typeId
-                                //2.此类别在左侧位置
-                                val typePosition =goodsFragment.goodsFragmentPresenter.getTypePositionByTypeId(typeId)
-                                //3最后找出tvReddotCount
-                                val goodsTypeInfo = goodsFragment.goodsFragmentPresenter.allGoodTypeList.get(typePosition)
-                                var redDotCount = 0
-                                goodsTypeInfo.redDotCount=redDotCount
+                            //清除左侧红点
+                            val typeId = goodInfos.typeId
+                            //2.此类别在左侧位置
+                            val typePosition = goodsFragment.goodsFragmentPresenter.getTypePositionByTypeId(typeId)
+                            //3最后找出tvReddotCount
+                            val goodsTypeInfo = goodsFragment.goodsFragmentPresenter.allGoodTypeList.get(typePosition)
+                            var redDotCount = 0
+                            goodsTypeInfo.redDotCount = redDotCount
 
-                            }
-                            //购物车适配器刷新
-                            cardAdapter.notifyDataSetChanged()
+                        }
+                        //购物车适配器刷新
+                        cardAdapter.notifyDataSetChanged()
 
-                            //右侧商品列表刷新
-                            goodsFragment.goodInfoAdapter.notifyDataSetChanged()
+                        //右侧商品列表刷新
+                        goodsFragment.goodInfoAdapter.notifyDataSetChanged()
 
-                            //左侧 类型刷新
-                            goodsFragment.goodTypeAdapter.notifyDataSetChanged()
+                        //左侧 类型刷新
+                        goodsFragment.goodTypeAdapter.notifyDataSetChanged()
 
-                           //再次调用购物车隐藏
-                            showOrHindCart()
+                        //再次调用购物车隐藏
+                        showOrHindCart()
 
                         //更新购物车底部金额  购物车里面数量
-                            updateCart()
+                        updateCart()
                     }
                 })
-                builder.setNegativeButton("不，我还要吃",object :DialogInterface.OnClickListener{
+                builder.setNegativeButton("不，我还要吃", object : DialogInterface.OnClickListener {
                     override fun onClick(dialog: DialogInterface?, which: Int) {
                         dialoge.dismiss()
                     }
                 })
-                dialoge= builder.show()
+                dialoge = builder.show()
             }
 
 
 
-            cartRv.layoutManager= LinearLayoutManager(this) as RecyclerView.LayoutManager?
-            cardAdapter= CardRvAdapter(this)
-            cartRv.adapter=cardAdapter
+            cartRv.layoutManager = LinearLayoutManager(this) as RecyclerView.LayoutManager?
+            cardAdapter = CardRvAdapter(this)
+            cartRv.adapter = cardAdapter
         }
 
 
@@ -121,7 +125,7 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
             val goodFragment: GoodsFragment = fragments.get(0) as GoodsFragment
             val cartGoodList = goodFragment.goodsFragmentPresenter.getCartGoodList()
             cardAdapter.setData(cartGoodList)
-            if(cartGoodList.size>0){
+            if (cartGoodList.size > 0) {
                 bottomSheetLayout.showWithSheetView(bottomSheetView);
             }
         }
@@ -132,6 +136,7 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun init() {
+        processIntent()
         //获取是否存在NavigationBar
         if (checkDeviceHasNavigationBar(this)) {
             //dp转换为px
@@ -144,6 +149,19 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
 
         //弹出购物车,底部点击弹出监听
         bottom.setOnClickListener(this)
+    }
+
+    private fun processIntent() {
+        if (intent.hasExtra("hasSelectInfo")) {
+            hasSelectInfo = intent.getBooleanExtra("hasSelectInfo", false)
+            //获取当前店的商家信息
+            seller = intent.getSerializableExtra("seller") as SellerListItem
+            tvDeliveryFee.text = "另需配送费" + PriceFormater.format(seller.deliveryFee.toFloat())
+            tvSendPrice.text = PriceFormater.format(seller.sendPrice.toFloat()) + "元起送"
+            //缓存数据已经添加，可以刷新底部购物车
+            Log.e("processIntent--->","updateCart")
+
+        }
     }
 
     val titles = listOf<String>("商品", "商家", "评论")
@@ -190,7 +208,7 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
         var count = 0;
         var countPrice = 0.0f
 
-        goodsFragment= fragments.get(0) as GoodsFragment
+        goodsFragment = fragments.get(0) as GoodsFragment
         val cartGoodList = goodsFragment.goodsFragmentPresenter.getCartGoodList()
 
         for (i in 0 until cartGoodList.size) {
@@ -199,6 +217,7 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
             countPrice += goodInfo.count * goodInfo.newPrice!!.toFloat()
         }
 
+        Log.e("count------","count+"+count)
         //购物车数量
         if (count > 0) {
             tvSelectNum.visibility = View.VISIBLE

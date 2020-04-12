@@ -10,9 +10,12 @@ import android.widget.*
 import com.heima.takeout.utils.PriceFormater
 import com.squareup.picasso.Picasso
 import ndk.pax.com.paxtakeout.R
+import ndk.pax.com.paxtakeout.model.bean.CacheSelectedInfo
 import ndk.pax.com.paxtakeout.model.bean.GoodInfo
 import ndk.pax.com.paxtakeout.ui.activity.BusinessActivity
 import ndk.pax.com.paxtakeout.ui.fragment.GoodsFragment
+import ndk.pax.com.paxtakeout.utils.Constants
+import ndk.pax.com.paxtakeout.utils.TakeoutApp
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter
 
 /**
@@ -87,6 +90,9 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
                 var hindAnimationSet=getHindAnimationSet()
                 tvCount.startAnimation(hindAnimationSet)
                 btnMinuss.startAnimation(hindAnimationSet)
+                TakeoutApp.inStance.deleteCacheSelectedInfo(goodInfo.id)
+            }else{
+                TakeoutApp.inStance.updateCacheSelectedInfo(goodInfo.id,Constants.MINUS)
             }
             count--
             goodInfo.count=count
@@ -101,6 +107,11 @@ class GoodsAdapter(val context:Context?,val goodFragment:GoodsFragment):BaseAdap
                 var animationSet=getShowAnimationSet()
                 tvCount.startAnimation(animationSet)
                 btnMinuss.startAnimation(animationSet)
+                //添加缓存
+                TakeoutApp.inStance.addCacheSelectedInfo(CacheSelectedInfo(goodInfo.sellerId,goodInfo.typeId,goodInfo.id,1))
+            }else{
+                //更新缓存
+                TakeoutApp.inStance.updateCacheSelectedInfo(goodInfo.id,Constants.ADD)
             }
             count++
             goodInfo.count=count
