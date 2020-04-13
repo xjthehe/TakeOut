@@ -3,6 +3,7 @@ package ndk.pax.com.paxtakeout.ui.activity
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
@@ -27,6 +28,7 @@ import ndk.pax.com.paxtakeout.model.bean.goodInfo
 import ndk.pax.com.paxtakeout.ui.fragment.CommentsFragment
 import ndk.pax.com.paxtakeout.ui.fragment.GoodsFragment
 import ndk.pax.com.paxtakeout.ui.fragment.SellerFragment
+import ndk.pax.com.paxtakeout.utils.TakeoutApp
 import java.util.*
 
 /**
@@ -52,6 +54,10 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
         when (v?.id) {
             R.id.bottom -> {
                 showOrHindCart()
+            }
+            R.id.tvSubmit->{
+                val intent:Intent= Intent(this,ConfirmActivity::class.java)
+                startActivity(intent)
             }
         }
     }
@@ -98,6 +104,8 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
 
                         //更新购物车底部金额  购物车里面数量
                         updateCart()
+                        //清空缓存
+                        TakeoutApp.inStance.clearCacheSelectedInfo(seller.id.toInt())
                     }
                 })
                 builder.setNegativeButton("不，我还要吃", object : DialogInterface.OnClickListener {
@@ -228,6 +236,14 @@ class BusinessActivity : BaseActivity(), View.OnClickListener {
         tvSelectNum.text = count.toString()
         //总共价格
         tvCountPrice.text = PriceFormater.format(countPrice)
-    }
 
+        //商品总价格大于或者等于起送价格
+        if(countPrice>=seller.sendPrice.toFloat()){
+            tvSubmit.visibility=View.VISIBLE
+            tvSendPrice.visibility=View.GONE
+        }else{
+            tvSendPrice.visibility=View.VISIBLE
+            tvSubmit.visibility=View.GONE
+        }
+    }
 }

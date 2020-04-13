@@ -74,12 +74,15 @@ class TakeoutApp:MobApplication(){
     }
 
     fun clearCacheSelectedInfo(sellerId: Int) {
+        val temp=ArrayList<CacheSelectedInfo>()
         for (i in 0 until infos.size) {
             val info = infos[i]
             if (info.sellerId == sellerId) {
-                infos.remove(info)
+                temp.add(info)
+//                infos.remove(info)
             }
         }
+        infos.removeAll(temp)
     }
 
     fun deleteCacheSelectedInfo(goodsId: Int) {

@@ -63,12 +63,15 @@
             android:value="20104f7411ad27c79be8f1d8943e2d34" />
 
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
         </activity>
+
+
+
         <!--SSMSDK UI配置-->
         <activity
             android:name="com.mob.tools.MobUIShell"
@@ -78,6 +81,16 @@
 
         <activity android:name=".ui.activity.LogingActivity"></activity>
         <activity android:name=".ui.activity.BusinessActivity"></activity>
+        <activity android:name=".ui.activity.ConfirmActivity"></activity>
+        <activity android:name=".ui.activity.AddRecepitAddressActivity"></activity>
+
+
+        <activity android:name=".ui.activity.RecepitAddressActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
 
 
@@ -98,7 +111,6 @@
                 <action android:name="cn.jpush.android.intent.PUSH_TIME" />
             </intent-filter>
         </service>
-
         <!-- since 1.8.0 option 可选项。用于同一设备中不同应用的JPush服务相互拉起的功能。 -->
         <!-- 若不启用该功能可删除该组件，将不拉起其他应用也不能被其他应用拉起 -->
         <service
