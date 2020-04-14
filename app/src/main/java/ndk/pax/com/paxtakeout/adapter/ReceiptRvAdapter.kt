@@ -1,6 +1,7 @@
 package ndk.pax.com.paxtakeout.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.model.bean.RecepitAddressBean
+import ndk.pax.com.paxtakeout.ui.activity.AddOrEditAddressActivity
 
 /**
  * User：Rowen
@@ -38,18 +40,21 @@ import ndk.pax.com.paxtakeout.model.bean.RecepitAddressBean
         receiptViewHolder.bindData(addressList[p1])
     }
 
-    class ReceiptViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val tvEdit:ImageView
+    inner class ReceiptViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        val ivEdit:ImageView
         val tvName:TextView
         val tvSex:TextView
         val tv_phone:TextView
         val tv_label:TextView
         val tv_address:TextView
+        lateinit var address:RecepitAddressBean
 
         init {
-            tvEdit=itemView.findViewById(R.id.iv_edit)
-            tvEdit.setOnClickListener{
-
+            ivEdit=itemView.findViewById(R.id.iv_edit)
+            ivEdit.setOnClickListener{
+                val intent= Intent(context, AddOrEditAddressActivity::class.java)
+                intent.putExtra("address",address)
+                context.startActivity(intent)
             }
             tvName=itemView.findViewById(R.id.tv_name)
             tvSex=itemView.findViewById(R.id.tv_sex)
@@ -59,12 +64,12 @@ import ndk.pax.com.paxtakeout.model.bean.RecepitAddressBean
         }
 
         fun bindData(address: RecepitAddressBean) {
+            this.address=address
             tvName.text=address.username
             tvSex.text=address.sex
             tv_phone.text=address.phone+","+address.phoneOther
             tv_address.text="${address.address},${address.detailaddress}"
             tv_label.text=address.label
-
         }
 
 

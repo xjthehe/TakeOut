@@ -19,11 +19,11 @@ import ndk.pax.com.paxtakeout.utils.CommonUtil
  * User：Rowen
  * Description:
  * 时间: 2020/4/12:21:08
- *
  */
 
-class AddRecepitAddressActivity : BaseActivity(), View.OnClickListener {
+class AddOrEditAddressActivity : BaseActivity(), View.OnClickListener {
     lateinit var addressDao: AddressDao
+    lateinit var  addressBean :RecepitAddressBean
 
     override fun onClick(v: View?) {
         when (v?.id) {
@@ -35,25 +35,60 @@ class AddRecepitAddressActivity : BaseActivity(), View.OnClickListener {
             R.id.btn_ok -> {
                 val isOk = checkReceiptAddressInfo()
                 if (isOk) {
-                    val username = et_name.text.toString().trim()
-                    var sex = "女士"
-                    if (rb_man.isChecked()) {
-                        sex = "男士"
-                    } else if (rb_women.isChecked()) {
-                        sex = "女士"
+                    if(intent.hasExtra("address")){
+                        updateAddress()
+                    }else{
+                        insertAddress()
                     }
-                    var phone = et_phone.text.toString().trim()
-                    var phoneOther = et_phone_other.text.toString().trim()
-                    var address = et_receipt_address.text.toString().trim()
-                    var detailAddress = et_detail_address.text.toString().trim()
-                    var label = tv_label.text.toString().trim()
-                    val bean = RecepitAddressBean(999, username, sex, phone, phoneOther, address, detailAddress, label, "38")
-                    addressDao.addRecepitAddressBean(bean)
-                    Toast.makeText(this, "可以新增地址", Toast.LENGTH_SHORT).show()
                     finish()
                 }
             }
         }
+    }
+    //更新地址
+    private fun updateAddress() {
+        val username = et_name.text.toString().trim()
+        var sex = "女士"
+        if (rb_man.isChecked()) {
+            sex = "男士"
+        } else if (rb_women.isChecked()) {
+            sex = "女士"
+        }
+        var phone = et_phone.text.toString().trim()
+        var phoneOther = et_phone_other.text.toString().trim()
+        var address = et_receipt_address.text.toString().trim()
+        var detailAddress = et_detail_address.text.toString().trim()
+        var label = tv_label.text.toString().trim()
+        //更新bean
+        addressBean.username=username
+        addressBean.sex=sex
+
+        addressBean.phone=phone
+        addressBean.phoneOther=phoneOther
+
+        addressBean.address=address
+        addressBean.detailaddress=detailAddress
+        addressBean.label=label
+
+        addressDao.updateRecepitAddressBean(addressBean)
+        Toast.makeText(this, "更新地址成功", Toast.LENGTH_SHORT).show()
+    }
+    private fun insertAddress() {
+        val username = et_name.text.toString().trim()
+        var sex = "女士"
+        if (rb_man.isChecked()) {
+            sex = "男士"
+        } else if (rb_women.isChecked()) {
+            sex = "女士"
+        }
+        var phone = et_phone.text.toString().trim()
+        var phoneOther = et_phone_other.text.toString().trim()
+        var address = et_receipt_address.text.toString().trim()
+        var detailAddress = et_detail_address.text.toString().trim()
+        var label = tv_label.text.toString().trim()
+        val bean = RecepitAddressBean(999, username, sex, phone, phoneOther, address, detailAddress, label, "38")
+        addressDao.addRecepitAddressBean(bean)
+        Toast.makeText(this, "可以新增地址", Toast.LENGTH_SHORT).show()
     }
 
     val titles = arrayOf("无", "家", "学校", "公司")
@@ -125,6 +160,40 @@ class AddRecepitAddressActivity : BaseActivity(), View.OnClickListener {
 
             }
         })
+
+
+        //处理intent
+        processIntent()
+    }
+
+    private fun processIntent() {
+        if(intent.hasExtra("address")){
+            addressBean= intent.getSerializableExtra("address") as RecepitAddressBean
+            if(addressBean!=null){
+                //delete按钮显示
+                ib_delete.visibility=View.VISIBLE
+                ib_delete.setOnClickListener{
+                    addressDao.deleteRecepitAddressBean(addressBean)
+                    Toast.makeText(this,"删除成功",Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+                tv_title.text="修改地址"
+                et_name.setText(addressBean.username)
+                val sex=addressBean.sex
+                if("男士".equals(sex)){
+                    rb_man.isChecked=true
+                }else{
+                    rb_women.isChecked=true
+                }
+                et_phone.setText(addressBean.phone)
+                et_phone_other.setText(addressBean.phoneOther)
+                et_receipt_address.setText(addressBean.address)
+                et_detail_address.setText(addressBean.detailaddress)
+                tv_label.text=addressBean.label
+            }
+        }else{
+            ib_delete.visibility=View.GONE
+        }
     }
 
 

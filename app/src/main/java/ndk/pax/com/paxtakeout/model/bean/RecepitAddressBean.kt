@@ -5,7 +5,9 @@ package ndk.pax.com.paxtakeout.model.bean
  */
 import com.j256.ormlite.field.DatabaseField
 import com.j256.ormlite.table.DatabaseTable
-@DatabaseTable(tableName = "t_address")class RecepitAddressBean(){
+import java.io.Serializable
+
+@DatabaseTable(tableName = "t_address")class RecepitAddressBean():Serializable{
     @DatabaseField(generatedId = true) var id:Int=0
     @DatabaseField(columnName = "username")var username:String=""
     @DatabaseField(columnName = "sex")var sex:String=""

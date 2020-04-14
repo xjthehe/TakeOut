@@ -82,7 +82,7 @@
         <activity android:name=".ui.activity.LogingActivity"></activity>
         <activity android:name=".ui.activity.BusinessActivity"></activity>
         <activity android:name=".ui.activity.ConfirmActivity"></activity>
-        <activity android:name=".ui.activity.AddRecepitAddressActivity"></activity>
+        <activity android:name=".ui.activity.AddOrEditAddressActivity"></activity>
 
 
         <activity android:name=".ui.activity.RecepitAddressActivity">
