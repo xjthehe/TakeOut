@@ -129,6 +129,9 @@
         <activity android:name=".ui.activity.ConfirmActivity"></activity>
         <activity android:name=".ui.activity.AddOrEditAddressActivity"></activity>
         <activity android:name=".ui.activity.MapLocationActivity"></activity>
+        <activity android:name=".ui.activity.OrderDetailActivity"></activity>
+
+
 
         <activity android:name=".ui.activity.RecepitAddressActivity">
             <!--<intent-filter>-->

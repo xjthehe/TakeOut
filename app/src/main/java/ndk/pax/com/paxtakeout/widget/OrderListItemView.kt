@@ -1,13 +1,16 @@
 package ndk.pax.com.paxtakeout.widget
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.RelativeLayout
+import android.widget.Toast
 import com.heima.takeout.utils.OrderObservable
 import kotlinx.android.synthetic.main.item_order_item.view.*
 import ndk.pax.com.paxtakeout.R
 import ndk.pax.com.paxtakeout.model.bean.Order
+import ndk.pax.com.paxtakeout.ui.activity.OrderDetailActivity
 
 /**
  * User：Rowen
@@ -17,8 +20,9 @@ import ndk.pax.com.paxtakeout.model.bean.Order
  */
 
 class OrderListItemView(context: Context?, attrs: AttributeSet?=null) : RelativeLayout(context, attrs) {
+    lateinit var itemView:View
     init {
-        View.inflate(context, R.layout.item_order_item,this)
+        itemView= View.inflate(context, R.layout.item_order_item,this)
     }
 
     fun bindView(order: Order) {
@@ -27,6 +31,13 @@ class OrderListItemView(context: Context?, attrs: AttributeSet?=null) : Relative
         //订单状态
         tv_order_item_type.text=getOrderTypeInfo(order.getType())
 
+        itemView.setOnClickListener {
+            val intent:Intent=Intent(context, OrderDetailActivity::class.java)
+            intent.putExtra("orderId", order.getId())
+            intent.putExtra("type", order.getType())
+            context.startActivity(intent)
+//          Toast.makeText(context,"item点击",Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getOrderTypeInfo(type: String?): String {
