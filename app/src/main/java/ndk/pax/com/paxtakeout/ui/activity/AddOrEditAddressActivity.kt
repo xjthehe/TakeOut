@@ -1,6 +1,7 @@
 package ndk.pax.com.paxtakeout.ui.activity
 
 import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AlertDialog
 import android.text.Editable
@@ -43,8 +44,27 @@ class AddOrEditAddressActivity : BaseActivity(), View.OnClickListener {
                     finish()
                 }
             }
+
+            R.id.btn_location_address->{
+                val intent= Intent(this,MapLocationActivity::class.java)
+                startActivityForResult(intent,1001)
+            }
+
         }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?){
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode==200){
+            if(data!=null){
+                val title=data.getStringExtra("title")
+                val address=data.getStringExtra("address")
+                et_receipt_address.setText(title)
+                et_detail_address.setText(address)
+            }
+        }
+    }
+
     //更新地址
     private fun updateAddress() {
         val username = et_name.text.toString().trim()
@@ -117,6 +137,9 @@ class AddOrEditAddressActivity : BaseActivity(), View.OnClickListener {
         if (CommonUtil.checkDeviceHasNavigationBar(this)) {
             activity_add_edit_container.setPadding(0, 0, 0, 48.dip2px(this))
         }
+        //地图一键定位
+        btn_location_address.setOnClickListener(this)
+
         //f返回按键
         ib_back.setOnClickListener(this)
         ib_add_phone_other.setOnClickListener(this)
